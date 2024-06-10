@@ -1,0 +1,13 @@
+create a phototheque 
+
+authentification
+create a folder
+add pictures on folder
+show all pictures (create a sprite)
+
+click on one picture to show the complete image 
+
+==========================
+
+map intéractive pour afficher et sauvegarder des dossiers contenant des photos
+*afficher une map avec coordonnées
