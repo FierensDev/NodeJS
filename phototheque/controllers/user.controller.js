@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const signUp = async (req,res) => {
   bcrypt.hash(req.body.password, 10)
@@ -23,7 +24,15 @@ const signIn = async (req,res) => {
       bcrypt.compare(req.body.password, user.password)
         .then((isPasswordValid) => {
           if(isPasswordValid){
-            return res.json({message: "Utilisateur connecté", data: user })
+
+            //JWT
+            const token = jwt.sign(
+              {userId: user.id},
+              "private_key",
+              {expiresIn: '24h'}
+            )
+
+            return res.json({message: "Utilisateur connecté", data: user, token })
           } else {
             return res.status(401).json({message: "Mot de passe incorrect"})
           }
