@@ -9,11 +9,15 @@ const signUp = async (req,res) => {
       console.log(`hashed : `, hash)
       User.create({
         email: req.body.email,
-        password: hash
+        password: hash,
+        last_name: req.body.last_name,
+        first_name: req.body.first_name
       })
       res.send({
         email: req.body.email,
-        password: hash
+        password: hash,
+        last_name: req.body.last_name,
+        first_name: req.body.first_name
       })
     })
 }
@@ -93,10 +97,38 @@ const deleteUser = async (req,res) => {
   }
 }
 
+const getByFirstnameAndLastName = async (req, res)=> {
+  try {
+    const { query } = req.params;
+
+    if (!query) {
+      return res.status(400).json({ message: "Query parameter is required" });
+    }
+
+    const regex = new RegExp(query, 'i'); // 'i' pour rendre la recherche insensible à la casse
+
+    const users = await User.find({
+      $or: [
+        { first_name: { $regex: regex } },
+        { last_name: { $regex: regex } }
+      ]
+    });
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+}
+
 module.exports = {
   signUp,
   getUserById,
   updateUser,
   deleteUser,
-  signIn
+  signIn,
+  getByFirstnameAndLastName
 }

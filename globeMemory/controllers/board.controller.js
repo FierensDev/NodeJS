@@ -72,11 +72,24 @@ const addUsers = async(req, res) => {
   }
 }
 
+const deleteBoard = async (req,res) => {
+  try {
+    const board= await Board.findByIdAndDelete(req.params.id)
 
+    if(board) {
+      res.send(board);
+    } else {
+      res.status(404).json({message: "board not find"})
+    }
+  } catch(err){
+    res.status(500).json({message: "Server error"})
+  }
+}
 
 module.exports = {
   createBoard,
   getBoardById,
   addImages,
   addUsers,
+  deleteBoard
 }

@@ -8,5 +8,6 @@ router.post('/sign-in', userController.signIn)
 router.get('/getById/:id', auth, userController.getUserById)
 router.patch('/update/:id', userController.updateUser)
 router.delete('/delete/:id', userController.deleteUser)
+router.get('/getByFirstnameAndLastName/:query', userController.getByFirstnameAndLastName)
 
 module.exports = router;
