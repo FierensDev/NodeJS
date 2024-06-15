@@ -15,3 +15,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1{
+  font-size: 1.9rem;
+}
+h2{
+  font-size: 1.5rem;
+}
+h3{
+  font-size: 1.4rem;
+}
+p{
+  font-size:1rem;
+  line-height: 1.2;
+}
+.p-info{
+  font-size: 0.80rem;
+}
+
+@media (min-width: 600px){
+  h1{
+    font-size: 2.9rem;
+  }
+  h2{
+    font-size: 2rem;
+  }
+  h3{
+    font-size: 1.7rem;
+  }
+  p{
+    font-size: 1.2rem;
+  }
+  .p-info{
+    font-size: 0.80rem;
+  }
+}

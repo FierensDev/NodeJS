@@ -1,6 +1,8 @@
 .background-div{
+  position: relative;
   width: 100%;
-  height: 427px;
+  /* height: 500px;
+  max-height: 50vh; */
   background-image: url("../../public/fond.png");
   background-size: revert;
   background-position: center center;
@@ -10,5 +12,4 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(rgba(255, 255, 255, 0), black);
-  /* background: black; */
 }
