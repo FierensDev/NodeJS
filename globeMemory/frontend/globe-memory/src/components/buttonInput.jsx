@@ -1,7 +1,9 @@
-const buttonInput = (props) => {
+const ButtonInput = ({content}) => {
   return(
-    <div>
-      <p>Se connecter</p>
-    </div>
+    <button className="bg-primary p-2 rounded-md w-full h-full">
+      <p>{content}</p>
+    </button>
   )
 }
+
+export default ButtonInput;

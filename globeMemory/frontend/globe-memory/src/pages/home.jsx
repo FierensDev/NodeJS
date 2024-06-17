@@ -3,11 +3,61 @@ import "./home.css"
 import { ReactComponent as MySvg} from '../assets/globeMemory_colored.svg'
 import {ReactComponent as SVGarrowBack} from '../assets/arrowBack.svg'
 import FormInput from "../components/formInput"
+import ButtonInput from "../components/buttonInput"
 
 function HomeComponent() {
 
   const[display, setDisplay] = useState(0);
-  const[formData, setFormData] = useState({})
+  const[formData, setFormData] = useState({
+    email:"",
+    password:""
+  })
+
+  const signIn = (e) => {
+    e.preventDefault();
+    console.log(`deunsLog : `, new FormData(e.target))
+    fetch('http://127.0.0.1:3000/user/sign-in',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "email" : formData.email,
+          "password" : formData.password
+        })
+      }
+    )
+    .then((res) => {
+      console.log(`res : `, res); 
+      return res.json();
+    })
+    .then((data) => console.log(`data : `, data))
+    .catch(err => console.log(`deunsLog : `, err))
+  }
+
+  const signUp = (e) => {
+    e.preventDefault();
+    console.log(`deunsLog : `, new FormData(e.target))
+    fetch('http://127.0.0.1:3000/user/sign-up',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "email" : formData.email,
+          "password" : formData.password
+        })
+      }
+    )
+    .then((res) => {
+      console.log(`res : `, res); 
+      return res.json();
+    })
+    .then((data) => console.log(`data : `, data))
+    .catch(err => console.log(`deunsLog : `, err))
+  }
 
   return(
   <div className="grid grid-rows-[200px,1fr] h-screen relative">
@@ -34,8 +84,7 @@ function HomeComponent() {
       <button
       className="text-primary"
       onClick={() => {
-        console.log("ok")
-        setDisplay(1);
+        setDisplay(2);
       }}
       >Vous n'avez pas de compte ? <br /> Cliquez ici pour vous inscrire</button>
     </div>
@@ -52,11 +101,31 @@ function HomeComponent() {
           <div  className="w-[15px] my-2"></div>
         </div>
 
-        <form action="">
-          <FormInput />
-          <FormInput />
+        <form action="" onSubmit={signIn}>
+          <FormInput name={"email"} data={{formData, setFormData}}/>
+          <FormInput name={"password"} data={{formData, setFormData}}/>
+          <ButtonInput content={"Se connecter"}/>
         </form>
       </div>
+    :
+    display === 2 ?
+    <div className="w-[90%] m-auto">
+      <div className="flex place-items-center justify-between">
+        <div className="w-[15px] my-2" onClick={() => {
+          setDisplay(0)
+        }}>
+          <SVGarrowBack />
+        </div>
+        <p>S'inscrire</p>
+        <div  className="w-[15px] my-2"></div>
+      </div>
+
+      <form action="" onSubmit={signUp}>
+        <FormInput name={"email"} data={{formData, setFormData}}/>
+        <FormInput name={"password"} data={{formData, setFormData}}/>
+        <ButtonInput content={"S'inscrire"}/>
+      </form>
+    </div>
     :
     <></>  
     }
