@@ -39,8 +39,7 @@ function HomeComponent() {
   const signUp = (e) => {
     e.preventDefault();
     console.log(`deunsLog : `, new FormData(e.target))
-    fetch('http://127.0.0.1:3000/user/sign-up',
-      {
+    fetch('http://127.0.0.1:3000/user/sign-up',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,8 +48,7 @@ function HomeComponent() {
           "email" : formData.email,
           "password" : formData.password
         })
-      }
-    )
+    })
     .then((res) => {
       console.log(`res : `, res); 
       return res.json();
@@ -102,8 +100,8 @@ function HomeComponent() {
         </div>
 
         <form action="" onSubmit={signIn}>
-          <FormInput name={"email"} data={{formData, setFormData}}/>
-          <FormInput name={"password"} data={{formData, setFormData}}/>
+          <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
+          <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
           <ButtonInput content={"Se connecter"}/>
         </form>
       </div>
@@ -121,8 +119,8 @@ function HomeComponent() {
       </div>
 
       <form action="" onSubmit={signUp}>
-        <FormInput name={"email"} data={{formData, setFormData}}/>
-        <FormInput name={"password"} data={{formData, setFormData}}/>
+      <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
+      <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
         <ButtonInput content={"S'inscrire"}/>
       </form>
     </div>

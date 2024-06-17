@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-const FormInput=({name, data})=>{
+const FormInput=({name, data, type})=>{
 
   const [cssIsFocused, setCssIsFocused] = useState(false)
 
@@ -20,7 +20,7 @@ const FormInput=({name, data})=>{
         onBlur={()=>{
           setCssIsFocused(false)
         }}
-        type="text" name={name} value={data.formData[name]} onChange={(e)=>{
+        type={type} name={name} value={data.formData[name]} onChange={(e)=>{
           data.setFormData({...data.formData, [name]: e.target.value})
         }}/>
       </div>
