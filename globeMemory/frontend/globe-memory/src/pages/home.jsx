@@ -1,4 +1,4 @@
-import react, { useState } from "react"
+import react, { useEffect, useState } from "react"
 import "./home.css"
 import { ReactComponent as MySvg} from '../assets/globeMemory_colored.svg'
 import {ReactComponent as SVGarrowBack} from '../assets/arrowBack.svg'
