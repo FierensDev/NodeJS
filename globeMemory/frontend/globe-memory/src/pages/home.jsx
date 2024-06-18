@@ -4,6 +4,8 @@ import { ReactComponent as MySvg} from '../assets/globeMemory_colored.svg'
 import {ReactComponent as SVGarrowBack} from '../assets/arrowBack.svg'
 import FormInput from "../components/formInput"
 import ButtonInput from "../components/buttonInput"
+import { useDisplayMessage } from "../context/displayMessageContext"
+import { useAuth } from "../context/authContext"
 
 function HomeComponent() {
 
@@ -13,10 +15,13 @@ function HomeComponent() {
     password:""
   })
 
+  const { showMessage } = useDisplayMessage();
+  const { createCookie } = useAuth()
+
   const signIn = (e) => {
     e.preventDefault();
-    console.log(`deunsLog : `, new FormData(e.target))
-    fetch('http://127.0.0.1:3000/user/sign-in',
+    console.log(`deunsLog cookie : `, new FormData(e.target))
+    fetch(process.env.REACT_APP_API_URL + '/user/sign-in',
       {
         method: 'POST',
         headers: {
@@ -30,16 +35,26 @@ function HomeComponent() {
     )
     .then((res) => {
       console.log(`res : `, res); 
+      if(res.status == 404){
+        return res.json()
+        .then(data => {
+          throw new Error(data)
+        })
+      }
       return res.json();
     })
-    .then((data) => console.log(`data : `, data))
+    .then((data) =>{
+      console.log(`data : `, data)
+      showMessage(data.message);
+      createCookie(data.token);
+    })
     .catch(err => console.log(`deunsLog : `, err))
   }
 
   const signUp = (e) => {
     e.preventDefault();
     console.log(`deunsLog : `, new FormData(e.target))
-    fetch('http://127.0.0.1:3000/user/sign-up',{
+    fetch(process.env.REACT_APP_API_URL+'/user/sign-up',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -51,9 +66,15 @@ function HomeComponent() {
     })
     .then((res) => {
       console.log(`res : `, res); 
-      return res.json();
+      if(res.status === 201){
+        setDisplay(1)
+        return res.json();
+      }
     })
-    .then((data) => console.log(`data : `, data))
+    .then((data) => {
+      console.log(`data : `, data)
+      showMessage(data.message);
+    })
     .catch(err => console.log(`deunsLog : `, err))
   }
 
@@ -70,23 +91,23 @@ function HomeComponent() {
     </div>
     <div className="bg-white rounded-xl relative top-[-10px]">
     {display === 0 ? 
-    <div className="w-[90%] m-auto grid grid-rows-[1fr,50px,1fr] h-full place-items-center">
-      <p className="text-center">Bienvenue sur Globe Memory, <br /> veuillez vous connecter pour continuer</p>
-      <button
-      className="bg-primary w-full p-2 rounded-md"
-      onClick={() => {
-        console.log("ok")
-        setDisplay(1);
-      }}
-      >Se connecter</button>
-      <button
-      className="text-primary"
-      onClick={() => {
-        setDisplay(2);
-      }}
-      >Vous n'avez pas de compte ? <br /> Cliquez ici pour vous inscrire</button>
-    </div>
-      :
+      <div className="w-[90%] m-auto grid grid-rows-[1fr,50px,1fr] h-full place-items-center">
+        <p className="text-center">Bienvenue sur Globe Memory, <br /> veuillez vous connecter pour continuer</p>
+        <button
+        className="bg-primary w-full p-2 rounded-md"
+        onClick={() => {
+          console.log("ok")
+          setDisplay(1);
+        }}
+        >Se connecter</button>
+        <button
+        className="text-primary"
+        onClick={() => {
+          setDisplay(2);
+        }}
+        >Vous n'avez pas de compte ? <br /> Cliquez ici pour vous inscrire</button>
+      </div>
+    :
       display === 1 ?
       <div className="w-[90%] m-auto">
         <div className="flex place-items-center justify-between">
@@ -107,25 +128,25 @@ function HomeComponent() {
       </div>
     :
     display === 2 ?
-    <div className="w-[90%] m-auto">
-      <div className="flex place-items-center justify-between">
-        <div className="w-[15px] my-2" onClick={() => {
-          setDisplay(0)
-        }}>
-          <SVGarrowBack />
+      <div className="w-[90%] m-auto">
+        <div className="flex place-items-center justify-between">
+          <div className="w-[15px] my-2" onClick={() => {
+            setDisplay(0)
+          }}>
+            <SVGarrowBack />
+          </div>
+          <p>S'inscrire</p>
+          <div  className="w-[15px] my-2"></div>
         </div>
-        <p>S'inscrire</p>
-        <div  className="w-[15px] my-2"></div>
-      </div>
 
-      <form action="" onSubmit={signUp}>
-      <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
-      <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
-        <ButtonInput content={"S'inscrire"}/>
-      </form>
-    </div>
+        <form action="" onSubmit={signUp}>
+        <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
+        <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
+          <ButtonInput content={"S'inscrire"}/>
+        </form>
+      </div>
     :
-    <></>  
+      <></>  
     }
     </div>
   </div>

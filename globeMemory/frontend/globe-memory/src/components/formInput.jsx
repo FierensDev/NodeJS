@@ -7,7 +7,7 @@ const FormInput=({name, data, type})=>{
   return (
     <div 
     onClick={()=>{
-      console.log(`deunsLog : `, data)
+      console.log(`deunsLog : `, process.env.REACT_APP_API_URL)
     }}
     className={cssIsFocused ? 'my-4 bg-secondary relative h-[40px] border border-black rounded-md' : 'my-4 bg-secondary relative h-[40px] rounded-md'}>
       <label className={cssIsFocused || data.formData[name] != '' ? 'text-[10px] absolute top-0 left-0 z-10 flex place-items-center pl-[10px] pointer-events-none' : ' text-small absolute z-10 inset-0 flex place-items-center pl-[10px] pointer-events-none'}>{name}</label>
@@ -20,7 +20,8 @@ const FormInput=({name, data, type})=>{
         onBlur={()=>{
           setCssIsFocused(false)
         }}
-        type={type} name={name} value={data.formData[name]} onChange={(e)=>{
+        type={type} name={name} value={data.formData[name]} 
+        onChange={(e)=>{
           data.setFormData({...data.formData, [name]: e.target.value})
         }}/>
       </div>
