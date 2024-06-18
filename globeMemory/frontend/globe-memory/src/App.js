@@ -5,12 +5,12 @@ import HomeComponent from './pages/home';
 
 function App() {
 
-  const { token } = useAuth()
+  const { userToken } = useAuth()
 
   return (
     <div className="App">
       <DisplayInfo />
-      {token ? 
+      {userToken ? 
       <></>
       :
       <HomeComponent />

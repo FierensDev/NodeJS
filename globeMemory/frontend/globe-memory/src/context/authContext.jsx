@@ -5,10 +5,9 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const [token, setToken] = useState(null);
+  const [userToken, setToken] = useState(null);
 
   const createCookie = (data) => {
-    console.log(`deunsLog : `, data)
     setToken(data)
     Cookies.set('GLOBEMEMORY_USER', data)
   }
@@ -19,18 +18,17 @@ export const AuthProvider = ({ children }) => {
 
   const getCookie = () => {
     const cookie = Cookies.get('GLOBEMEMORY_USER');
-    console.log(`cookie : `, cookie)
     setToken(cookie);
     return cookie;
   }
 
   useEffect(() => {
     getCookie()
-    console.log(`call getCookie`, )
-  }, [token])
+    console.log(`call getCookie`)
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ token, createCookie, getCookie, deleteCookie }}>
+    <AuthContext.Provider value={{ userToken, createCookie, getCookie, deleteCookie }}>
         {children}
     </AuthContext.Provider>
   );
