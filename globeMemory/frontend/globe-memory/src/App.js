@@ -54,6 +54,8 @@ function Root() {
     image_link:""
   })
 
+  const [boardFriend, setBoardFriend] = useState([]);
+
   useEffect(() => {
     if(userToken){
       navigate('/MyMemory')
@@ -143,7 +145,17 @@ function Root() {
                   <p className='font-semibold'>Collaborateurs</p>
                   <div className='flex place-items-center mt-2'>
                     <div className='bg-primary rounded-full w-[30px] h-[30px] mr-4'></div>
-                    <p>Invitez vos amis</p>
+                    {/* <p>Invitez des amis</p> */}
+                    <div className='bg-gray-200 relative'>
+                      <input type="text" placeholder='Invitez des amis'/>
+                      <div className='absolute bot-0 left-0 right-0 bg-red-400'>
+                        <p onClick={() => {
+                          setBoardFriend([...boardFriend, 'Vincent']);
+                          console.log(`deunsLog : `, boardFriend)
+                        }}>Vincent</p>
+                        <p>azer</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
