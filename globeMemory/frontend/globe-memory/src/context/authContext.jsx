@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     return cookie;
   }
 
+
   useEffect(() => {
     getCookie()
     console.log(`call getCookie`)

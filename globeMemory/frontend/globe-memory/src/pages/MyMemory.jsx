@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react"
 import { ReactComponent as MagnifyingGlassSvg } from '../assets/magnifyingGlass.svg'
 import { ReactComponent as DoubleArrowSvg } from '../assets/doubleArrow.svg'
 import { useAuth } from "../context/authContext";
+import { redirect } from "react-router-dom";
 
 const MyMemoryComponent = (props) => {
-  const { userToken } = useAuth();
+  const { userToken, deleteCookie } = useAuth();
 
   const [boards, setBoards] = useState([])
 
@@ -20,6 +21,10 @@ const MyMemoryComponent = (props) => {
     )
     .then((res) => {
       console.log(`res : `, res); 
+      if(res.status === 401){
+        deleteCookie()
+        return redirect("/");
+      } 
       if(res.status == 404){
         return res.json()
         .then(data => {

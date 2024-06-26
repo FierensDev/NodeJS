@@ -14,32 +14,11 @@ import { useDisplayMessage } from './context/displayMessageContext';
 
 
 const router = createBrowserRouter([
-  // {
-  //   path:'/',
-  //   element: <Root />,
-  //   errorElement: <h1>Créer une page Error</h1>,
-  //   children:[
-  //     {
-  //       path:'/home',
-  //       element: <HomeComponent />
-  //     },
-  //     {
-  //       path:'/test',
-  //       element: <h1>test</h1>
-  //     }
-  //   ]
-  // }
-
   {
     path:'/',
     element: <Root />,
     errorElement: <h1>Create error page</h1>,
     children: [
-      // {
-      //   path:'',
-      //   element: <HomeComponent />
-      // },
-
       {
         path:'/MyMemory',
         children: [
@@ -95,7 +74,6 @@ function Root() {
       },
       body:JSON.stringify({
         'name': boardData.name,
-        'created_by': "6664668cb55e5e0281123453",
         'shared_to':["666642cd5effd0be1ff4e53b"],
         'image_link':"first"
       })
