@@ -83,7 +83,7 @@ function Root() {
       },
       body:JSON.stringify({
         'name': boardData.name,
-        'shared_to':["666642cd5effd0be1ff4e53b"],
+        'shared_to': boardFriend,
         'image_link':"first"
       })
     })
@@ -146,9 +146,18 @@ function Root() {
           </nav>
 
           {displayCreateBoard ? 
-            <div className='absolute inset-0 bg-black bg-opacity-50'>
+            <div className='absolute inset-0 bg-black bg-opacity-50' onClick={(e) => {
+              e.stopPropagation()
+              setDisplayCreateBoard(false);
+            }}>
 
-              <form onSubmit={createBoard} className='absolute bg-white bottom-0 left-0 right-0 h-[80vh] p-4 rounded-t-xl'>
+              <form onSubmit={createBoard} className='absolute bg-white bottom-0 left-0 right-0 h-[80vh] p-4 rounded-t-xl'
+                onClick={(e) => {
+                  setSearchFriend('')
+                  setResultSearchFriend([])
+                  e.stopPropagation()
+                }}
+              >
                 <div className='flex justify-between w-full'>
                   <button 
                     className='rotate-45 w-[20px] '
@@ -170,29 +179,23 @@ function Root() {
                 }}
                 />
                 </div>
-                <div
-                style={{background: 'red', padding: '10px',margin: '2px', color:'white', fontSize: '20px'}}
-                onClick={() => {
-                  console.log('deuns :', boardFriend)
-                }}
-                >test</div>
+
                 <div className='my-5'>
                   <p className='font-semibold'>Collaborateurs</p>
-                  <div className='flex place-items-center mt-2 bg-gray-300'>
+                  <div className='flex place-items-center mt-2'>
                     <div className='bg-primary rounded-full w-[30px] h-[30px] mr-4'></div>
-                    {/* <p>Invitez des amis</p> */}
-                    <div className='bg-gray-200 w-full relative'>
+                    <div className='bg-gray-200 w-[80%] relative'>
                       <input 
                       className='w-full'
                       type="text" placeholder='Invitez des amis' value={searchFriend} onChange={handleSearch}/>
-                      <div className='absolute bot-0 left-0 right-0 bg-red-400 max-h-[120px] overflow-y-auto'>
+                      <div className='absolute z-10 bot-0 left-0 right-0 bg-secondary rounded border border-primary max-h-[120px] overflow-y-auto'>
                         
                         {
                           resultSearchFriend.length > 0 ?
                           <>
                          { resultSearchFriend.map((friend, index) => (
-                            <div key={index} className='bg-red-400' onClick={(e)=>{
-                              setBoardFriend([...boardFriend, friend._id])
+                            <div key={index} className='p-2 hover:bg-primary hover:cursor-pointer' onClick={(e)=>{
+                            setBoardFriend([...boardFriend, friend])
                              setSearchFriend('')
                              setResultSearchFriend([])
                               console.log(`deunsLog :`)
@@ -202,15 +205,37 @@ function Root() {
                           ))}
                           </>
                           :
-                          <>rien</>
+                          <></>
                         }
-                        {/* <p onClick={() => {
-                          setBoardFriend([...boardFriend, 'Vincent']);
-                          console.log(`deunsLog : `, boardFriend)
-                        }}>Vincent</p> */}
 
                       </div>
                     </div>
+                  </div>
+                  <div className=' w-full h-[40px]'>
+
+                        {
+                          boardFriend.length > 0 ? 
+                          <>
+                            {
+                              boardFriend.map((friend, index) => (
+                                <div key={index} className='flex place-items-center h-[30px]'>
+                                  <div 
+                                    onClick={()=>{
+                                      const newTab = boardFriend.filter(val => val._id !== friend._id)
+                                      setBoardFriend(newTab)
+                                    }}
+                                    className="text-primary w-[18px] origin-center rotate-45"
+                                  >
+                                    <MyCrossSvg/>
+                                  </div>
+                                  <p>{friend.last_name}e {friend.first_name}</p>
+                                </div>
+                              ))
+                            }
+                          </>
+                          :
+                          <></>
+                        }
                   </div>
                 </div>
 
