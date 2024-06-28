@@ -54,7 +54,10 @@ function Root() {
     image_link:""
   })
 
+  const [searchFriend, setSearchFriend] = useState('');
+  const [resultSearchFriend, setResultSearchFriend] = useState([]);
   const [boardFriend, setBoardFriend] = useState([]);
+  const [loader, setLoarder] = useState(false)
 
   useEffect(() => {
     if(userToken){
@@ -63,6 +66,10 @@ function Root() {
       navigate('/')
     }
   }, [userToken])
+
+  useEffect(() => {
+
+  }, [searchFriend])
 
   function createBoard(e){
     e.preventDefault();
@@ -96,6 +103,29 @@ function Root() {
     .catch(err => console.log(`deunsLog : `, err))
   }
 
+  const handleSearch = async (e) => {
+    setSearchFriend(e.target.value);
+    setLoarder(true);
+
+      fetch(process.env.REACT_APP_API_URL + `/user/getByFirstnameAndLastName/${e.target.value}`,{
+        methods: "GET",
+        headers: {
+          'Authorization':`Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        },
+      })
+      .then((res) => {
+        console.log(`deunsLog : `, res)
+        return res.json()
+      })
+      .then((data) => {
+        console.log(`deunsLog : `, data)
+        setResultSearchFriend(data)
+      })
+      .catch((err) => {
+        console.log(`deunsLog : `, err)
+      })
+  }
  
   return(
     <div>
@@ -140,20 +170,45 @@ function Root() {
                 }}
                 />
                 </div>
-
+                <div
+                style={{background: 'red', padding: '10px',margin: '2px', color:'white', fontSize: '20px'}}
+                onClick={() => {
+                  console.log('deuns :', boardFriend)
+                }}
+                >test</div>
                 <div className='my-5'>
                   <p className='font-semibold'>Collaborateurs</p>
-                  <div className='flex place-items-center mt-2'>
+                  <div className='flex place-items-center mt-2 bg-gray-300'>
                     <div className='bg-primary rounded-full w-[30px] h-[30px] mr-4'></div>
                     {/* <p>Invitez des amis</p> */}
-                    <div className='bg-gray-200 relative'>
-                      <input type="text" placeholder='Invitez des amis'/>
-                      <div className='absolute bot-0 left-0 right-0 bg-red-400'>
-                        <p onClick={() => {
+                    <div className='bg-gray-200 w-full relative'>
+                      <input 
+                      className='w-full'
+                      type="text" placeholder='Invitez des amis' value={searchFriend} onChange={handleSearch}/>
+                      <div className='absolute bot-0 left-0 right-0 bg-red-400 max-h-[120px] overflow-y-auto'>
+                        
+                        {
+                          resultSearchFriend.length > 0 ?
+                          <>
+                         { resultSearchFriend.map((friend, index) => (
+                            <div key={index} className='bg-red-400' onClick={(e)=>{
+                              setBoardFriend([...boardFriend, friend._id])
+                             setSearchFriend('')
+                             setResultSearchFriend([])
+                              console.log(`deunsLog :`)
+                            }}> 
+                              Nom: {friend.last_name}, Prenom : {friend.first_name}
+                            </div>
+                          ))}
+                          </>
+                          :
+                          <>rien</>
+                        }
+                        {/* <p onClick={() => {
                           setBoardFriend([...boardFriend, 'Vincent']);
                           console.log(`deunsLog : `, boardFriend)
-                        }}>Vincent</p>
-                        <p>azer</p>
+                        }}>Vincent</p> */}
+
                       </div>
                     </div>
                   </div>

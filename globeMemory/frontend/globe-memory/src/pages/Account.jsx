@@ -82,20 +82,27 @@ const AccountComponent = (props) => {
   const modifyUser = (e) => {
     e.preventDefault();
 
-    const passwordToSend = newPassword !== null || '' ? newPassword : userData.password
-
+    const objectToSend = newPassword !== null || '' ? 
+    {
+      'email': userData.email,
+      'last_name': userData.last_name,
+      'first_name': userData.first_name,
+      'password': newPassword
+    } 
+    :
+    {
+      'email': userData.email,
+      'last_name': userData.last_name,
+      'first_name': userData.first_name,
+    }
+    console.log(`passwordToSend : `, objectToSend)
     fetch(process.env.REACT_APP_API_URL + '/user/update', {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${userToken}`,
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify({
-        'email': userData.email,
-        'last_name': userData.last_name,
-        'first_name': userData.first_name,
-        'password': passwordToSend
-      })
+      body:JSON.stringify(objectToSend)
     })
     .then((res) => {
       if(res.status == 404){
@@ -116,7 +123,6 @@ const AccountComponent = (props) => {
   return (
     <div className="w-[90%] mx-auto">
       <div className="mx-auto my-8 h-[100px] w-[100px] bg-primary rounded-full flex place-items-center justify-center text-[3rem] text-center text-white">D</div>
-     
       <form className="grid grid-cols-2 gap-3" onSubmit={modifyUser}>
         <div className="flex flex-col">
           <label htmlFor="last_name">Nom</label>
@@ -155,11 +161,11 @@ const AccountComponent = (props) => {
         <div className="col-span-2 flex flex-col">
           <label htmlFor="password">Mot de passe</label>
           <input type="password" id="password"  className="placeholder-gray-300 font-bold"
-           value={newPassword === null ? '**********' : newPassword}
+           value={newPassword === null ? '***' : newPassword}
            onChange={(e)=>{
               setNewPassword(e.target.value)
               // setUserData({...userData, password:e.target.value})
-              console.log(`deunsLog : `, newPassword)
+              console.log(`newPassword : `, newPassword)
             }}
           />
         </div>
