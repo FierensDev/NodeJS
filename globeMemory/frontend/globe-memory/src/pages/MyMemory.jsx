@@ -3,6 +3,7 @@ import { ReactComponent as MagnifyingGlassSvg } from '../assets/magnifyingGlass.
 import { ReactComponent as DoubleArrowSvg } from '../assets/doubleArrow.svg'
 import { useAuth } from "../context/authContext";
 import { redirect } from "react-router-dom";
+import BoardDisplay from "../components/boardDisplay";
 
 const MyMemoryComponent = (props) => {
   const { userToken, deleteCookie } = useAuth();
@@ -65,12 +66,7 @@ const MyMemoryComponent = (props) => {
       <div className="grid grid-cols-2 gap-2">
         
           {boards.map((board, index) => (
-            
-          <div key={index}>
-            <div className="w-[100%] h-[100px] bg-gray-300 rounded-lg"></div>
-            <p className="font-semibold mx-2 mt-1">{board.name}</p>
-            <p className="text-info text-[0.7rem] mx-2 mb-1">{board.image_link.length} photos</p>
-          </div>
+            <BoardDisplay key={index} data={board}/>
           ))}
         
       </div>

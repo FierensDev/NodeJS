@@ -11,8 +11,6 @@ import { ReactComponent as MyMemorySvg } from './assets/myMemory.svg';
 import { ReactComponent as MyCrossSvg } from './assets/cross.svg'
 import { useDisplayMessage } from './context/displayMessageContext';
 
-
-
 const router = createBrowserRouter([
   {
     path:'/',
@@ -69,10 +67,6 @@ function Root() {
       navigate('/')
     }
   }, [userToken])
-
-  useEffect(() => {
-
-  }, [searchFriend])
 
   function createBoard(e){
     e.preventDefault();
@@ -253,38 +247,7 @@ function Root() {
                 </div>
 
                 <div className=''>
-                  <div
-                  style={{background: 'red', padding: '10px',margin: '2px', color:'white', fontSize: '20px'}}
-                  onClick={() => {
-                    console.log(pictures);   
-                    const formData = new FormData();
-                    for(let i = 0; i < pictures.length; i++){
-                      formData.append("files", pictures[i])
-                    }
-
-                    console.log(Array.from(formData))
-
-                    fetch(process.env.REACT_APP_API_URL + '/board/photos/upload', {
-                      method: 'POST',
-                      headers: {},
-                      body: formData
-                    })
-                    .then((res) => {
-                      if(res.status == 404){
-                        return res.json()
-                        .then(data => {
-                          throw new Error(data)
-                        })
-                      }
-                      return res.json();
-                    })
-                    .then((data) =>{
-                      console.log(`data : `, data.message)
-                      showMessage(data.message);
-                    })
-                    .catch(err => console.log(`deunsLog : `, err))
-                  }}
-                  >test</div>
+                  
                   <div className={animationOnDrag ?'relative bg-primary w-full h-[200px] rounded-md border border-primary' :'relative bg-secondary w-full h-[200px] rounded-md border border-primary'}>
                     <input 
                       className='opacity-0 w-full h-full'
@@ -328,14 +291,6 @@ function Root() {
 
 function App() {
   return (
-    // <div className="App">
-    //   <DisplayInfo />
-    //   {userToken ? 
-    //   <></>
-    //   :
-    //   <HomeComponent />
-    //   }
-    // </div>
     <>
       <DisplayInfo />
       <RouterProvider router={router} />
