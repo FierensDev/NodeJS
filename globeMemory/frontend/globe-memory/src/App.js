@@ -77,60 +77,43 @@ function Root() {
   function createBoard(e){
     e.preventDefault();
 
-    let linkImage = []
+      let formData = new FormData();
 
-    if(pictures.length > 0){
-      const formData = new FormData();
-      for(let i = 0; i < pictures.length; i++){
-        formData.append("files", pictures[i])
+      formData.append('name', boardData.name)
+      for(let i = 0; i < boardFriend.length; i++){
+        formData.append('shared_to', boardFriend[i]._id)
       }
-
-      fetch(process.env.REACT_APP_API_URL + '/board/photos/upload', {
-        method: 'POST',
-        headers: {},
-        body: formData
-      })
-      .then((res) => {
-        if(res.status == 404){
-          return res.json()
-          .then(data => {
-            throw new Error(data)
-          })
+      
+      if(pictures.length > 0){
+        for(let i = 0; i < pictures.length; i++){
+          formData.append("files", pictures[i])
         }
-        return res.json();
-      })
-      .then((data) =>{
-        console.log(`data : `, data.message)
-        showMessage(data.message);
-      })
-      .catch(err => console.log(`deunsLog : `, err))
-    }
-
-    fetch(process.env.REACT_APP_API_URL + '/board/create', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${userToken}`,
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify({
-        'name': boardData.name,
-        'shared_to': boardFriend
-      })
-    })
-    .then((res) => {
-      if(res.status == 404){
-        return res.json()
-        .then(data => {
-          throw new Error(data)
-        })
       }
-      return res.json();
-    })
-    .then((data) =>{
-      console.log(`data : `, data.message)
-      showMessage(data.message);
-    })
-    .catch(err => console.log(`deunsLog : `, err))
+      
+      fetch(process.env.REACT_APP_API_URL + '/board/createBoardWithPictures', {
+            method: 'POST',
+            headers: {
+              'Authorization':`Bearer ${userToken}`,
+            },
+            body: formData
+          })
+          .then((res) => {
+            if(res.status == 400){
+              return res.json()
+              .then(data => {
+                console.log(data);
+                showMessage(data.error)
+                throw new Error(data)
+              })
+            }
+            return res.json();
+          })
+          .then((data) =>{
+            console.log(`data : `, data.message)
+            showMessage(data.message);
+          })
+          .catch(err => console.log(`deunsLog : `, err))
+
   }
 
   const handleSearch = async (e) => {
