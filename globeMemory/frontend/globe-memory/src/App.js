@@ -58,6 +58,9 @@ function Root() {
   const [resultSearchFriend, setResultSearchFriend] = useState([]);
   const [boardFriend, setBoardFriend] = useState([]);
   const [loader, setLoarder] = useState(false)
+  const [animationOnDrag, setAnimationOnDrag] = useState(false)
+  //photos
+  const [pictures, setPictures] = useState([])
 
   useEffect(() => {
     if(userToken){
@@ -73,7 +76,35 @@ function Root() {
 
   function createBoard(e){
     e.preventDefault();
-    console.log(`deunsLog : `, boardData)
+
+    let linkImage = []
+
+    if(pictures.length > 0){
+      const formData = new FormData();
+      for(let i = 0; i < pictures.length; i++){
+        formData.append("files", pictures[i])
+      }
+
+      fetch(process.env.REACT_APP_API_URL + '/board/photos/upload', {
+        method: 'POST',
+        headers: {},
+        body: formData
+      })
+      .then((res) => {
+        if(res.status == 404){
+          return res.json()
+          .then(data => {
+            throw new Error(data)
+          })
+        }
+        return res.json();
+      })
+      .then((data) =>{
+        console.log(`data : `, data.message)
+        showMessage(data.message);
+      })
+      .catch(err => console.log(`deunsLog : `, err))
+    }
 
     fetch(process.env.REACT_APP_API_URL + '/board/create', {
       method: 'POST',
@@ -83,8 +114,7 @@ function Root() {
       },
       body:JSON.stringify({
         'name': boardData.name,
-        'shared_to': boardFriend,
-        'image_link':"first"
+        'shared_to': boardFriend
       })
     })
     .then((res) => {
@@ -239,7 +269,66 @@ function Root() {
                   </div>
                 </div>
 
-                <button className='bg-primary p-2 rounded-md'>Créer le tableau</button>
+                <div className=''>
+                  <div
+                  style={{background: 'red', padding: '10px',margin: '2px', color:'white', fontSize: '20px'}}
+                  onClick={() => {
+                    console.log(pictures);   
+                    const formData = new FormData();
+                    for(let i = 0; i < pictures.length; i++){
+                      formData.append("files", pictures[i])
+                    }
+
+                    console.log(Array.from(formData))
+
+                    fetch(process.env.REACT_APP_API_URL + '/board/photos/upload', {
+                      method: 'POST',
+                      headers: {},
+                      body: formData
+                    })
+                    .then((res) => {
+                      if(res.status == 404){
+                        return res.json()
+                        .then(data => {
+                          throw new Error(data)
+                        })
+                      }
+                      return res.json();
+                    })
+                    .then((data) =>{
+                      console.log(`data : `, data.message)
+                      showMessage(data.message);
+                    })
+                    .catch(err => console.log(`deunsLog : `, err))
+                  }}
+                  >test</div>
+                  <div className={animationOnDrag ?'relative bg-primary w-full h-[200px] rounded-md border border-primary' :'relative bg-secondary w-full h-[200px] rounded-md border border-primary'}>
+                    <input 
+                      className='opacity-0 w-full h-full'
+                      onDragEnter={(e) => {
+                        e.stopPropagation()
+                        setAnimationOnDrag(true)
+                        console.log('drag in')
+                      }}
+                      onDragLeave={(e)=> {
+                        e.stopPropagation()
+                        setAnimationOnDrag(false)
+                        console.log('drag out')
+                      }}
+                      type="file" name="" id="" onChange={(e) => {
+                        setPictures(e.target.files)
+                      }} multiple
+                    />
+                    {pictures.length > 0 ? 
+                    <p className='absolute top-20 left-0 right-0 text-center text-secondary'>{pictures.length} Photos</p>
+                    :
+                    <> {animationOnDrag ? <p className='absolute top-20 left-0 right-0 text-center text-secondary'>Relacher les photos</p> :  <p className='absolute top-20 left-0 right-0 text-center text-primary'>Glisser/Déposer des photos</p>}</>
+                    }
+                   
+                  </div>
+                </div>
+
+                <button className='bg-primary p-2 rounded-md my-2 w-full mx-auto'>Créer le tableau</button>
               </form>
             </div>
             :
