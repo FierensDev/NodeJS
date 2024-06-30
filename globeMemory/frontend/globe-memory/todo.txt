@@ -1,0 +1,9 @@
+front :
+-0.5d tablette
+-0.5d pc
+
+-lettre D => premiere lettre lastname + firstname 
+
+filtres:
+-trie des tableaux avec la barre de recherche
+-sort arrays with arrows

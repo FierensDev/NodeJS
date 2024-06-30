@@ -45,7 +45,7 @@ const MyMemoryId = (props) => {
                   (<></>)
               ))}
             </div>
-            <div className="flex flex-col ">
+            <div className="flex flex-col  place-items-center justify-between">
             {memoryData.image_link.map((img, index) => (
                 index % 2 !== 0 ?
                 ( <div key={index} className="overflow-hidden w-full bg-gray-300 rounded-md my-1" onClick={() => {console.log(index)}}>

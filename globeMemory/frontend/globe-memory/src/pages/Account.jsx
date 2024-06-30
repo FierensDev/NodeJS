@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { ReactComponent as MyCrossSvg } from '../assets/cross.svg'
 import { useAuth } from "../context/authContext";
 import { useDisplayMessage } from "../context/displayMessageContext";
+import ArrayAccountDelete from "../components/arrayAccountDelete";
 
 const AccountComponent = (props) => {
 
@@ -11,7 +11,6 @@ const AccountComponent = (props) => {
 
   const [boards, setBoards] = useState([])
   const [userData, setUserData] = useState({})
-
 
 
   useEffect(() => {
@@ -61,26 +60,35 @@ const AccountComponent = (props) => {
       return res.json();
     })
     .then((data) =>{
-      console.log(`data : `, data)
+      // console.log(`data : `, data)
       setBoards(data);
     })
     .catch(err => console.log(`deunsLog : `, err))
   },[showMessage])
 
-  const deleteBoard = (id) => {
-    fetch(process.env.REACT_APP_API_URL + `/board/delete/${id}`,{
-      method:'DELETE',
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(`deunsLog : `, data)
-      showMessage(data.message)
-    })
-    .catch(err => console.log(`deunsLog : `, err))
-  }
-
   const modifyUser = (e) => {
     e.preventDefault();
+
+    const checkLastName = ( userData.last_name.length > 2) && ( userData.last_name !== "" || null);
+    const checkFirstName = ( userData.first_name.length > 2) && ( userData.first_name !== "" || null);
+    const checkEmail =  userData.email.length > 6 &&  userData.email.includes("@");
+    const checkPassword = newPassword === "" || newPassword === null || newPassword.length < 3;
+
+    console.log(typeof(newPassword));
+    console.log(checkPassword);
+
+    if(!checkLastName){
+      return showMessage('Veuillez renseigner un nom correct')
+    }
+    else if(!checkFirstName){
+      return showMessage('Veuillez renseigner un prénom correct')
+    }
+    else if(!checkEmail){
+      return showMessage('Veuillez renseigner un email correct')
+    }
+    else if(checkPassword){
+      return showMessage('Veuillez renseigner un mot de passe correct')
+    }
 
     const objectToSend = newPassword !== null || '' ? 
     {
@@ -122,7 +130,11 @@ const AccountComponent = (props) => {
 
   return (
     <div className="w-[90%] mx-auto">
-      <div className="mx-auto my-8 h-[100px] w-[100px] bg-primary rounded-full flex place-items-center justify-center text-[3rem] text-center text-white">D</div>
+       {userData && userData.last_name && userData.last_name.length > 1 ?
+        <div className="mx-auto my-8 h-[100px] w-[100px] bg-primary rounded-full flex place-items-center justify-center text-[3rem] text-center text-white">{userData.last_name[0]}{userData.first_name[0]}</div>
+        :
+        <></>
+      }
       <form className="grid grid-cols-2 gap-3" onSubmit={modifyUser}>
         <div className="flex flex-col">
           <label htmlFor="last_name">Nom</label>
@@ -186,18 +198,8 @@ const AccountComponent = (props) => {
         {boards.length > 0 ? 
         <>
         {boards.map((board, index) => (
-          <div key={index} className="my-3 flex place-items-center" >
-             <div 
-              onClick={()=>{
-                deleteBoard(board._id)
-              }}
-             className="text-primary w-[18px] origin-center rotate-45"><MyCrossSvg/></div>
-            <div >
-              <p className="font-semibold mx-2 mt-1">{board.name}</p>
-              <p className="text-info text-[0.7rem] mx-2 mb-1">{board.image_link.length} photos</p>
-            </div>
-          </div>
-          ))}
+          <ArrayAccountDelete key={index} board={board}/>
+        ))}
         </>
         :
         <p>Vous n'avez aucun tableau</p>}

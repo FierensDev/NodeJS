@@ -43,6 +43,7 @@ function Root() {
   const { userToken } = useAuth();
   const navigate = useNavigate();
   const {showMessage} = useDisplayMessage();
+  const [userData, setUserData] = useState({})
 
   const [displayCreateBoard, setDisplayCreateBoard] = useState(false);
   const [boardData, setBoardData] = useState({
@@ -67,6 +68,34 @@ function Root() {
       navigate('/')
     }
   }, [userToken])
+
+  
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/user/getByToken',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization':`Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        },
+      }
+    )
+    .then((res) => {
+      console.log(`res : `, res); 
+      if(res.status == 404){
+        return res.json()
+        .then(data => {
+          throw new Error(data)
+        })
+      }
+      return res.json();
+    })
+    .then((data) =>{
+      console.log(`data : `, data)
+      setUserData(data);
+    })
+    .catch(err => console.log(`deunsLog : `, err))
+  }, [])
 
   function createBoard(e){
     e.preventDefault();
@@ -105,6 +134,7 @@ function Root() {
           .then((data) =>{
             console.log(`data : `, data.message)
             showMessage(data.message);
+            window.location.reload()
           })
           .catch(err => console.log(`deunsLog : `, err))
 
@@ -148,7 +178,8 @@ function Root() {
               <button className='fill-primary text-primary' onClick={() => {
                 setDisplayCreateBoard(true)
               }}><MyCrossSvg/></button>
-              <Link className='' to="/Account"><div className='bg-primary h-[20px] w-[20px] rounded-full flex place-items-center justify-center'><strong>D</strong></div></Link>
+
+              <Link className='' to="/Account"><div className='bg-primary h-[20px] w-[20px] rounded-full flex place-items-center justify-center text-[11px] text-white font-semibold'>              {userData && userData.last_name && userData.last_name.length > 1 ? `${userData.last_name[0]}${userData.first_name[0]}` : '' }</div></Link>
             </div>
           </nav>
 
@@ -158,7 +189,11 @@ function Root() {
               setDisplayCreateBoard(false);
             }}>
 
-              <form onSubmit={createBoard} className='absolute bg-white bottom-0 left-0 right-0 h-[80vh] p-4 rounded-t-xl'
+              <form onSubmit={createBoard} style={{
+     overflowY: 'scroll',
+     scrollbarColor: '#ff6a5f white',
+     scrollbarWidth: 'thin',
+}} className=' overflow-y-auto absolute bg-white bottom-0 left-0 right-0 h-[80vh] p-4 rounded-t-xl'
                 onClick={(e) => {
                   setSearchFriend('')
                   setResultSearchFriend([])

@@ -53,6 +53,25 @@ function HomeComponent() {
 
   const signUp = (e) => {
     e.preventDefault();
+
+    console.log(formData);
+    const checkLastName = (formData.last_name.length > 2) && (formData.last_name !== "" || null);
+    const checkFirstName = (formData.first_name.length > 2) && (formData.first_name !== "" || null);
+    const checkEmail = formData.email.length > 6 && formData.email.includes("@");
+    const checkPassword = (formData.password.length > 4) && (formData.password !== "" || null);
+
+    if(!checkLastName){
+      return showMessage('Veuillez renseigner un nom correct')
+    }
+    else if(!checkFirstName){
+      return showMessage('Veuillez renseigner un prénom correct')
+    }
+    else if(!checkEmail){
+      return showMessage('Veuillez renseigner un email correct')
+    }
+    else if(!checkPassword){
+      return showMessage('Veuillez renseigner un mot de passe correct')
+    }
     console.log(`deunsLog : `, new FormData(e.target))
     fetch(process.env.REACT_APP_API_URL+'/user/sign-up',{
         method: 'POST',
@@ -60,6 +79,8 @@ function HomeComponent() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          "last_name": formData.last_name,
+          "first_name": formData.first_name,
           "email" : formData.email,
           "password" : formData.password
         })
@@ -140,8 +161,10 @@ function HomeComponent() {
         </div>
 
         <form action="" onSubmit={signUp}>
-        <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
-        <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
+          <FormInput name={"last_name"} data={{formData, setFormData}} type={"text"}/>
+          <FormInput name={"first_name"} data={{formData, setFormData}} type={"text"}/>
+          <FormInput name={"email"} data={{formData, setFormData}} type={"text"}/>
+          <FormInput name={"password"} data={{formData, setFormData}} type={"password"}/>
           <ButtonInput content={"S'inscrire"}/>
         </form>
       </div>

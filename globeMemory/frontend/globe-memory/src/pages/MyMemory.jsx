@@ -8,7 +8,35 @@ import BoardDisplay from "../components/boardDisplay";
 const MyMemoryComponent = (props) => {
   const { userToken, deleteCookie } = useAuth();
 
+  const [userData, setUserData] = useState({})
   const [boards, setBoards] = useState([])
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/user/getByToken',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization':`Bearer ${userToken}`,
+          'Content-Type': 'application/json'
+        },
+      }
+    )
+    .then((res) => {
+      console.log(`res : `, res); 
+      if(res.status == 404){
+        return res.json()
+        .then(data => {
+          throw new Error(data)
+        })
+      }
+      return res.json();
+    })
+    .then((data) =>{
+      console.log(`data : `, data)
+      setUserData(data);
+    })
+    .catch(err => console.log(`deunsLog : `, err))
+  }, [])
 
   useEffect(()=>{
     fetch(process.env.REACT_APP_API_URL + '/board/getByUserId',
@@ -44,7 +72,12 @@ const MyMemoryComponent = (props) => {
   return (
     <div className="w-[95%] mx-auto mt-4">
       <div className="flex place-items-center justify-between">
-        <div className='bg-primary h-[30px] w-[30px] rounded-full flex place-items-center justify-center text-white'><strong>D</strong></div>
+      {userData && userData.last_name && userData.last_name.length > 1 ?
+    <div className='bg-primary h-[30px] w-[30px] rounded-full flex place-items-center justify-center text-white'>
+        {userData.last_name[0]}{userData.first_name[0]}
+    </div>
+    : <></>
+}
         <p>Boards</p>
         <div className="w-[30px]"></div>
       </div>
