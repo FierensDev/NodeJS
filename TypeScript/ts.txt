@@ -1,0 +1,27 @@
+npm install -g typescript
+tsc nomdufichier.ts (genere du javascript)
+
+tips =
+change a string to a number juste add a +varName
+
+==============
+var
+---
+number
+string
+boolean
+
+same for array
+any[] or any<Array>
+
+-----
+Tuple
+-----
+
+let x: [string, number]
+==============
+
+
+
+
+
